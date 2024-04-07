@@ -2,6 +2,7 @@ package com.example.calender.screens
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -54,13 +56,43 @@ fun CalendarView(
     val currentMonth = remember { mutableStateOf(selectedDate.month) }
     val currentYear = remember { mutableStateOf(selectedDate.year) }
     val startDate = remember {
-        mutableStateOf(selectedDate)
+        mutableStateOf(LocalDate.of(
+            currentYear.value,
+            currentMonth.value,
+            selectedDate.dayOfMonth
+        ))
     }
+
     fun previousMonth() {
-
+        if(currentMonth.value == Month.JANUARY) {
+            currentMonth.value = Month.DECEMBER
+            currentYear.value -= 1
+        }
+        else {
+            currentMonth.value -= 1
+        }
+        startDate.value =
+            LocalDate.of(
+                currentYear.value,
+                currentMonth.value,
+                startDate.value.dayOfMonth
+            )
     }
-    fun nextMonth() {
 
+    fun nextMonth() {
+        if(currentMonth.value == Month.DECEMBER) {
+            currentMonth.value = Month.JANUARY
+            currentYear.value += 1
+        }
+        else {
+            currentMonth.value += 1
+        }
+        startDate.value =
+            LocalDate.of(
+                currentYear.value,
+                currentMonth.value,
+                startDate.value.dayOfMonth
+            )
     }
     Column(
         modifier = Modifier
@@ -97,16 +129,17 @@ fun CalendarView(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceAround
         ) {
-//            <-----functionality to be added------>
-//            Image(
-//                painter = painterResource(id = R.drawable.left_arrow),
-//                contentDescription = "left",
-//                modifier = Modifier
-//                    .size(20.dp)
-//                    .clickable {
-//                        previousMonth()
-//                    }
-//            )
+            if(currentYear.value!=2001 || currentMonth.value!=Month.JANUARY) {
+                Image(
+                    painter = painterResource(id = R.drawable.left_arrow),
+                    contentDescription = "left",
+                    modifier = Modifier
+                        .size(20.dp)
+                        .customClickable {
+                            previousMonth()
+                        }
+                )
+            }
             Text(
                 text = "${currentMonth.value}, ${currentYear.value}",
                 style = TextStyle(
@@ -115,16 +148,17 @@ fun CalendarView(
                     fontSize = 20.sp
                 )
             )
-//            <-----functionality to be added------>
-//            Image(
-//                painter = painterResource(id = R.drawable.right_arrow),
-//                contentDescription = "right",
-//                modifier = Modifier
-//                    .size(20.dp)
-//                    .clickable {
-//                        nextMonth()
-//                    }
-//            )
+            if(currentYear.value != 2050 || currentMonth.value != Month.DECEMBER) {
+                Image(
+                    painter = painterResource(id = R.drawable.right_arrow),
+                    contentDescription = "right",
+                    modifier = Modifier
+                        .size(20.dp)
+                        .customClickable {
+                            nextMonth()
+                        }
+                )
+            }
         }
 
         Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
