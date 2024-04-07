@@ -2,13 +2,16 @@ package com.example.calender.screens
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -19,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -27,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.calender.R
 import com.example.calender.commonComposables.HorizontalDivider
+import com.example.calender.commonComposables.customClickable
 import java.time.LocalDate
 import java.time.ZoneOffset
 
@@ -39,7 +44,9 @@ fun CalendarScreen(toTaskScreen: () -> Unit, toStoreTask: (date: Long) -> Unit) 
         mutableStateOf(false)
     }
     Column(
-        modifier = Modifier.padding(16.dp),
+        modifier = Modifier
+            .padding(start = 16.dp, end = 16.dp, top = 16.dp)
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -58,23 +65,28 @@ fun CalendarScreen(toTaskScreen: () -> Unit, toStoreTask: (date: Long) -> Unit) 
             }) {
                 Text(text = "Go To")
             }
-            Button(onClick = { }) {
-                Text(text = "View Tasks", modifier = Modifier.clickable {
-                    toTaskScreen()
-                })
+            Button(onClick = { toTaskScreen() }) {
+                Text(text = "View Tasks")
             }
         }
 
         HorizontalDivider()
 
-        CalendarView(showMonthYearChooser = showMonthYearChooser, selectedDate = selectedDate, onDateSelected = {
-            selectedDate = it
-        })
+        CalendarView(
+            showMonthYearChooser = showMonthYearChooser,
+            selectedDate = selectedDate,
+            onDateSelected = {
+                selectedDate = it
+            })
 
         HorizontalDivider()
 
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .padding(bottom = 16.dp)
+                .fillMaxWidth()
+                .background(Color.LightGray, shape = RoundedCornerShape(4.dp))
+                .padding(horizontal = 12.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -84,7 +96,7 @@ fun CalendarScreen(toTaskScreen: () -> Unit, toStoreTask: (date: Long) -> Unit) 
                 contentDescription = null,
                 modifier = Modifier
                     .size(20.dp)
-                    .clickable {
+                    .customClickable {
                         toStoreTask(
                             selectedDate
                                 .atStartOfDay(ZoneOffset.UTC)

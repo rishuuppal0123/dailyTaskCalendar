@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,11 +20,9 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.core.text.isDigitsOnly
 import com.example.calender.ui.theme.Purple40
-import com.example.calender.ui.theme.grey
 
 @Composable
 fun PrimaryTextField(
@@ -43,11 +40,10 @@ fun PrimaryTextField(
     helperText: String? = null,
     textStyle: TextStyle = MaterialTheme.typography.bodyLarge,
     labelStyle: TextStyle = MaterialTheme.typography.bodyLarge,
-    placeHolderStyle: TextStyle = textStyle.copy(color = grey),
-    helperTextStyle: TextStyle = MaterialTheme.typography.labelSmall.copy(color = if (error) Purple40 else Color.Black),
+    placeHolderStyle: TextStyle = textStyle.copy(color = Color.LightGray),
+    helperTextStyle: TextStyle = MaterialTheme.typography.labelMedium.copy(color = if (error) Color.Red else Color.Black),
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
-    visualTransformation: VisualTransformation = VisualTransformation.None,
     contentPadding: PaddingValues = PaddingValues(vertical = 8.dp, horizontal = 16.dp),
     helperPaddingValues: PaddingValues = PaddingValues(start = 16.dp)
 ) {
@@ -92,7 +88,6 @@ fun PrimaryTextField(
             keyboardOptions = keyboardOptions,
             keyboardActions = keyboardActions,
             textStyle = textStyle,
-            visualTransformation = visualTransformation,
             decorationBox = { innerTextField ->
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -109,14 +104,12 @@ fun PrimaryTextField(
                     }
                 }
             })
-        if (helperText != null) {
-            if ((error && value.isNotEmpty()) || !error) {
-                Text(
-                    text = helperText,
-                    style = helperTextStyle,
-                    modifier = Modifier.padding(helperPaddingValues)
-                )
-            }
+        if (error && helperText != null) {
+            Text(
+                text = helperText,
+                style = helperTextStyle,
+                modifier = Modifier.padding(helperPaddingValues)
+            )
         }
     }
 }

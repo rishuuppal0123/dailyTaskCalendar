@@ -17,15 +17,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -97,8 +94,8 @@ fun TaskItem(task: Task, deleteAction: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .shadow(4.dp, shape = RoundedCornerShape(4.dp), ambientColor = Color.DarkGray)
-            .background(color = Color.Cyan.copy(alpha = 0.7f), shape = RoundedCornerShape(4.dp))
+            .background(color = Color.Cyan.copy(0.4f), shape = RoundedCornerShape(4.dp))
+            .shadow(elevation = 2.dp, shape = RoundedCornerShape(4.dp))
             .padding(8.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {

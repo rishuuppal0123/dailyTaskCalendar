@@ -5,14 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.calender.common.ApiResult
-import com.example.calender.data.Task
 import com.example.calender.data.TaskModel
 import com.example.calender.di.IoDispatcher
 import com.example.calender.repo.TaskListRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,7 +23,11 @@ class StoreTaskViewModel @Inject constructor(
     val uiState: State<StoreTaskUiState> = _uiState
 
     fun editTaskTitle(title: String) {
-        _uiState.value = StoreTaskUiState(task = uiState.value.task.copy(title = title))
+        val isTitleValid = title.isNotBlank()
+        _uiState.value = StoreTaskUiState(
+            titleError = if (!isTitleValid) "Title can't be empty" else "",
+            task = uiState.value.task.copy(title = title)
+        )
     }
 
     fun editTaskDescription(desc: String) {

@@ -7,11 +7,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -62,11 +60,18 @@ fun StoreTaskScreen(
             fontFamily = FontFamily.Cursive
         )
 
-        PrimaryTextField(label = "Title", value = state.task.title, onValueChange = {
-            viewModel.editTaskTitle(title = it)
-        })
+        PrimaryTextField(
+            error = state.titleError.isNotBlank(),
+            helperText = state.titleError,
+            placeHolder = "Enter task title here",
+            label = "Title",
+            value = state.task.title,
+            onValueChange = {
+                viewModel.editTaskTitle(title = it)
+            })
 
         PrimaryTextField(
+            placeHolder = "Enter task body here",
             label = "Task Description",
             value = state.task.description,
             onValueChange = {
@@ -80,13 +85,13 @@ fun StoreTaskScreen(
             onClick = {
                 viewModel.addTask(createdDate = date)
             },
-            colors = ButtonDefaults.textButtonColors(containerColor = Color.Magenta)
+            enabled = state.task.title.isNotEmpty()
         ) {
             Text(
                 text = "Add",
                 color = Color.White,
-                modifier = Modifier.padding(vertical = 8.dp),
-                fontSize = 20.sp
+                modifier = Modifier.padding(vertical = 6.dp),
+                fontSize = 18.sp
             )
         }
     }

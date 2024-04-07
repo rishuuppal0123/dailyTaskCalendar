@@ -2,16 +2,14 @@ package com.example.calender.screens
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -38,6 +36,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.calender.R
 import com.example.calender.commonComposables.HorizontalDivider
+import com.example.calender.commonComposables.customClickable
+import com.example.calender.commonComposables.`if`
+import com.example.calender.isLeapYear
+import com.example.calender.ui.theme.Purple40
 import java.time.LocalDate
 import java.time.Month
 
@@ -93,7 +95,7 @@ fun CalendarView(
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceAround
         ) {
 //            <-----functionality to be added------>
 //            Image(
@@ -106,7 +108,7 @@ fun CalendarView(
 //                    }
 //            )
             Text(
-                "${currentMonth.value}, ${currentYear.value}",
+                text = "${currentMonth.value}, ${currentYear.value}",
                 style = TextStyle(
                     fontFamily = FontFamily.SansSerif,
                     fontWeight = FontWeight.SemiBold,
@@ -125,14 +127,17 @@ fun CalendarView(
 //            )
         }
 
-        Row {
+        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
             val days = listOf("Sun", "Mon", "Tue", "Wed", "Thurs", "Fri", "Sat")
             for (i in 0 until 7) {
                 Text(
                     text = days[i],
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .background(Color.LightGray)
+                        .padding(vertical = 4.dp),
                     textAlign = TextAlign.Center,
-                    fontSize = 14.sp,
+                    fontSize = 16.sp,
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -151,9 +156,6 @@ private fun CalendarGrid(
     currentMonth: Month?,
     onDateSelected: (LocalDate) -> Unit
 ) {
-    fun isLeapYear(year: Int): Boolean {
-        return (year % 4 == 0) && (year % 100 != 0 || year % 400 == 0)
-    }
 
     val daysInMonth = currentMonth?.length(isLeapYear(selectedDate.year))
     val firstDayOfMonth = LocalDate.of(selectedDate.year, currentMonth, 1)
@@ -176,26 +178,23 @@ private fun CalendarGrid(
                         modifier = Modifier
                             .weight(1f)
                             .padding(4.dp)
-                            .background(
-                                color = if (day != null && day.month == currentMonth)
-                                    Color.White
-                                else
-                                    Color.LightGray,
-                                shape = CircleShape
-                            )
-                            .clickable {
+                            .`if`(
+                                day == selectedDate,
+                                then = { it.border(color = Purple40, width = 2.dp, shape = CircleShape) })
+                            .background(Color.White, shape = CircleShape)
+                            .customClickable {
                                 day?.let { onDateSelected(it) }
                             },
                         contentAlignment = Alignment.Center
                     ) {
                         day?.let {
                             Text(
-                                modifier = Modifier.padding(vertical = 4.dp),
+                                modifier = Modifier.padding(vertical = 12.dp),
                                 fontWeight = FontWeight.Medium,
                                 text = it.dayOfMonth.toString(),
                                 textAlign = TextAlign.Center,
                                 style = TextStyle(fontSize = 16.sp),
-                                color = if (it == selectedDate) Color.Blue else Color.Black
+                                color = if (it == selectedDate) Purple40 else Color.Black
                             )
                         }
                     }
@@ -215,7 +214,7 @@ fun SelectYear(modifier: Modifier, currentYear: MutableState<Int>, onChange: (In
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable {
+                .customClickable {
                     yearExpanded = !yearExpanded
                 },
             contentAlignment = Alignment.Center
@@ -256,7 +255,7 @@ fun SelectYear(modifier: Modifier, currentYear: MutableState<Int>, onChange: (In
                         onChange(year)
                         yearExpanded = false
                     })
-                if(year != 2050) {
+                if (year != 2050) {
                     HorizontalDivider()
                 }
             }
@@ -275,7 +274,7 @@ fun SelectMonth(modifier: Modifier, currentMonth: MutableState<Month>, onChange:
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable {
+                .customClickable {
                     monthExpanded = !monthExpanded
                 },
             contentAlignment = Alignment.Center
